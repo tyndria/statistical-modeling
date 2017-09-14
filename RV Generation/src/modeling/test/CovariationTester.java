@@ -21,7 +21,9 @@ public class CovariationTester {
 		for (int i = 0; i < SAMPLE_MEAN; i ++) {
 			double propability = this.getPropability(i);
 			isPassed = significanceLevel < propability;
-			System.out.println(i + ": " + isPassed + "; " + propability);
+			if (!isPassed ) {
+				System.out.println("Failed: index = " + i);
+			}
 		}
 		return isPassed;
 	}
@@ -54,7 +56,6 @@ public class CovariationTester {
 	private double getPropability(int index) {
 		double covariationEstimation = this.getCovariationEstimation(index) - this.getCovariation(index);
 		double distrFuncArg = 12 * Math.sqrt(sample.size() - 1) * Math.abs(covariationEstimation) / this.getCovaritationSelectionValue(index);
-		double distrProbability = uDistribution.cumulativeProbability(distrFuncArg);
 		return 2 * (1 - uDistribution.cumulativeProbability(distrFuncArg));
 	}
 }

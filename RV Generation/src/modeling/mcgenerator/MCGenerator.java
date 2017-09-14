@@ -28,7 +28,7 @@ public class MCGenerator implements Constants {
 	}
 	
 	public double get(int index) {
-		return generatedSequence.get(index);
+		return generatedSequence.get(index - 1);
 	}
 	
 	public List getGeneratedSequence() {

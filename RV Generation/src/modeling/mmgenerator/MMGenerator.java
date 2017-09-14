@@ -22,7 +22,7 @@ public class MMGenerator implements Constants{
 		mcGenerator1.generate(RANDOM_VALUES_LENGTH + n);
 		randomValues = new ArrayList<Double>();
 		for (int i = 0; i < RANDOM_VALUES_LENGTH; i ++) {
-			randomValues.add(mcGenerator1.get(i));
+			randomValues.add(mcGenerator1.get(i + 1));
 		}
 		
 		mcGenerator2.generate(n);
@@ -33,7 +33,7 @@ public class MMGenerator implements Constants{
 	public void generate(int n) {
 		generatedSequence.clear();
 		for (int i = 0; i < n; i ++) {
-			int randomValuesIndex = (int)Math.floor(mcGenerator2.get(i) * RANDOM_VALUES_LENGTH);
+			int randomValuesIndex = (int)Math.floor(mcGenerator2.get(i + 1) * RANDOM_VALUES_LENGTH);
 			generatedSequence.add(randomValues.get(randomValuesIndex));
 			
 			randomValues.set(randomValuesIndex, mcGenerator1.get(i + RANDOM_VALUES_LENGTH));
@@ -45,6 +45,6 @@ public class MMGenerator implements Constants{
 	}
 	
 	public double get(int index) {
-		return generatedSequence.get(index);
+		return generatedSequence.get(index - 1);
 	}
 }
