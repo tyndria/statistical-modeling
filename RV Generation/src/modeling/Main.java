@@ -2,6 +2,7 @@ package modeling;
 
 import modeling.mcgenerator.MCGenerator;
 import modeling.mmgenerator.MMGenerator;
+import modeling.test.CovariationTester;
 import modeling.test.MomentsTester;
 
 public class Main implements Constants{
@@ -11,7 +12,8 @@ public class Main implements Constants{
 		mmGenerator.generate(SEQUENCE_LENGTH);
 		
 		MomentsTester momentsTester = new MomentsTester(SIGNIFICANCE_LEVEL, mmGenerator.getGeneratedSequence());
-		System.out.println(momentsTester.testSecondMoment());
+		CovariationTester covariationTester = new CovariationTester(SIGNIFICANCE_LEVEL, mmGenerator.getGeneratedSequence());
+		System.out.println(covariationTester.test());
 	}
 
 }
