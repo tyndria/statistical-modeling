@@ -1,5 +1,7 @@
 package modeling;
 
+import java.util.List;
+
 import modeling.mcgenerator.MCGenerator;
 import modeling.mmgenerator.MMGenerator;
 import modeling.test.CovariationTester;
@@ -8,31 +10,34 @@ import modeling.test.MomentsTester;
 public class Main implements Constants{
 
 	public static void main(String[] args) {
+		Utils utils = new Utils();
+		
 		MCGenerator mcGenerator = new MCGenerator(A_1, C_1);
 		mcGenerator.generate(SEQUENCE_LENGTH);
-		System.out.printf("multiplicative congruential method: %f, %f, %f", mcGenerator.get(100), mcGenerator.get(900), mcGenerator.get(1000));
-		System.out.println("\n");
+		List mcGeneratedSequence = mcGenerator.getGeneratedSequence();
+		System.out.printf("Multiplicative congruential method: %f, %f, %f \n", mcGenerator.get(1), mcGenerator.get(15), mcGenerator.get(1000));
+		System.out.println("Distribution: " + utils.countDistrubution(mcGeneratedSequence) + "\n");
+	
 		
 		MMGenerator mmGenerator = new MMGenerator(A_1, C_1, A_2, C_2, K, SEQUENCE_LENGTH);
 		mmGenerator.generate(SEQUENCE_LENGTH);
-		System.out.printf("MacLaren-Marsaglia method: %f, %f, %f", mmGenerator.get(100), mmGenerator.get(900), mmGenerator.get(1000));
-		System.out.println("\n");
+		List mmGeneratedSequence = mmGenerator.getGeneratedSequence();
+		System.out.printf("MacLaren-Marsaglia method: %f, %f, %f \n", mmGenerator.get(1), mmGenerator.get(15), mmGenerator.get(1000));
+		System.out.println("Distribution: " + utils.countDistrubution(mmGeneratedSequence) + "\n");
 		
-		MomentsTester momentsTester1 = new MomentsTester(SIGNIFICANCE_LEVEL, mmGenerator.getGeneratedSequence());
-		System.out.println("First moment test for multiplicative congruential method: is passed? " + momentsTester1.testFirstMoment());
-		System.out.println("Second moment test for multiplicative congruential method: is passed? " + momentsTester1.testSecondMoment() + "\n");
+		MomentsTester momentsTester = new MomentsTester(SIGNIFICANCE_LEVEL);
+		System.out.println("First moment test for multiplicative congruential method: is passed? " + momentsTester.testFirstMoment(mcGeneratedSequence));
+		System.out.println("Second moment test for multiplicative congruential method: is passed? " + momentsTester.testSecondMoment(mcGeneratedSequence) + "\n");
 		
-		MomentsTester momentsTester2 = new MomentsTester(SIGNIFICANCE_LEVEL, mcGenerator.getGeneratedSequence());
-		System.out.println("First moment test for MacLaren-Marsaglia method: is passed? " + momentsTester2.testFirstMoment());
-		System.out.println("Second moment test for MacLaren-Marsaglia method: is passed? " + momentsTester2.testSecondMoment() + "\n");
+		System.out.println("First moment test for MacLaren-Marsaglia method: is passed? " + momentsTester.testFirstMoment(mmGeneratedSequence));
+		System.out.println("Second moment test for MacLaren-Marsaglia method: is passed? " + momentsTester.testSecondMoment(mmGeneratedSequence) + "\n");
 		
-		CovariationTester covariationTester1 = new CovariationTester(SIGNIFICANCE_LEVEL, mcGenerator.getGeneratedSequence());
+		CovariationTester covariationTester = new CovariationTester(SIGNIFICANCE_LEVEL);
 		System.out.println("Covariation test for multiplicative congruential method:");
-		System.out.println(covariationTester1.test() + "\n");
+		System.out.println(covariationTester.test(mcGeneratedSequence) + "\n");
 		
-		CovariationTester covariationTester2 = new CovariationTester(SIGNIFICANCE_LEVEL, mmGenerator.getGeneratedSequence());
 		System.out.println("Covariation test for MacLaren-Marsaglia method:");
-		System.out.println(covariationTester2.test() + "\n");
+		System.out.println(covariationTester.test(mmGeneratedSequence) + "\n");
 	}
 
 }

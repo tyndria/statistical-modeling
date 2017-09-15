@@ -1,22 +1,26 @@
 package modeling.test;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.math3.distribution.UniformRealDistribution;
+import org.apache.commons.math3.distribution.NormalDistribution;
+
 
 public class CovariationTester {
 	int SAMPLE_MEAN = 30;
 	double significanceLevel;
 	List<Double> sample;
-	UniformRealDistribution uDistribution;
+	NormalDistribution uDistribution;
 	
-	public CovariationTester(double significanceLevel, List sample) {
-		this.sample = sample;
+	List<Double> covariations  = new ArrayList<Double>();
+	
+	public CovariationTester(double significanceLevel) {
 		this.significanceLevel = significanceLevel;
-		this.uDistribution = new UniformRealDistribution();
+		this.uDistribution = new NormalDistribution();
 	}
 	
-	public boolean test() {
+	public boolean test(List sample) {
+		this.sample = sample;
 		boolean isPassed = true;
 		for (int i = 0; i < SAMPLE_MEAN; i ++) {
 			double propability = this.getPropability(i);
@@ -25,6 +29,7 @@ public class CovariationTester {
 				System.out.println("Failed: index = " + i);
 			}
 		}
+		
 		return isPassed;
 	}
 	
@@ -36,13 +41,15 @@ public class CovariationTester {
 		double sum = 0;
 		int n = sample.size();
 		double averageValue = this.getAverageValue();
-		for (int i = 1; i < (n - index); i ++) {
-			sum += sample.get(index + 1); // ???
+		for (int i = 0; i <= (n - index - 1); i ++) {
+			double production = sample.get(index + i) * sample.get(i);
+			sum += production;
 		}
-		sum *= sample.get(1);
 		sum /= (double)(n - index - 1);
 		
-		return sum - Math.pow(averageValue, 2) * (double)n / (n - 1);
+		double res = sum - Math.pow(averageValue, 2) * (double)n / (n - 1);
+		covariations.add(res);
+		return res;
 	}
 	
 	private double getCovaritationSelectionValue(int index) {

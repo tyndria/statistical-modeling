@@ -9,16 +9,17 @@ public class MomentsTester {
 	double significanceLevel;
 	NormalDistribution nDistribution = new NormalDistribution();
 
-	public MomentsTester(double significanceLevel, List sample) {
-		this.sample = sample;
+	public MomentsTester(double significanceLevel) {
 		this.significanceLevel = significanceLevel;
 	}
 	
-	public boolean testFirstMoment() {
+	public boolean testFirstMoment(List sample) {
+		this.sample = sample;
 		return significanceLevel < this.getFirstMomentPropability();
 	}
 	
-	public boolean testSecondMoment() {
+	public boolean testSecondMoment(List sample) {
+		this.sample = sample;
 		return significanceLevel < this.getDispersionProbability();
 	}
 	
