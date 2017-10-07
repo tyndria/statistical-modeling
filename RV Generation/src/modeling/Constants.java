@@ -9,7 +9,7 @@ public interface Constants {
 	long C_2 = 37330745;
 	
 	int K = 64;
-	int SEQUENCE_LENGTH = 1000;
+	int SEQUENCE_LENGTH = 10000;
 	
 	double SIGNIFICANCE_LEVEL = 0.05;
 }

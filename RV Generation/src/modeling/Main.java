@@ -17,13 +17,14 @@ public class Main implements Constants{
 		List mcGeneratedSequence = mcGenerator.getGeneratedSequence();
 		System.out.printf("Multiplicative congruential method: %f, %f, %f \n", mcGenerator.get(1), mcGenerator.get(15), mcGenerator.get(1000));
 		System.out.println("Distribution: " + utils.countDistrubution(mcGeneratedSequence) + "\n");
-	
+		utils.outputDistribution(utils.countDistrubution(mcGeneratedSequence), "mc.txt");
 		
 		MMGenerator mmGenerator = new MMGenerator(A_1, C_1, A_2, C_2, K, SEQUENCE_LENGTH);
 		mmGenerator.generate(SEQUENCE_LENGTH);
 		List mmGeneratedSequence = mmGenerator.getGeneratedSequence();
 		System.out.printf("MacLaren-Marsaglia method: %f, %f, %f \n", mmGenerator.get(1), mmGenerator.get(15), mmGenerator.get(1000));
 		System.out.println("Distribution: " + utils.countDistrubution(mmGeneratedSequence) + "\n");
+		utils.outputDistribution(utils.countDistrubution(mmGeneratedSequence), "mm.txt");
 		
 		MomentsTester momentsTester = new MomentsTester(SIGNIFICANCE_LEVEL);
 		System.out.println("First moment test for multiplicative congruential method: is passed? " + momentsTester.testFirstMoment(mcGeneratedSequence));
