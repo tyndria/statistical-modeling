@@ -4,3 +4,9 @@ RV Generation/.settings/
 RV Generation/bin/
 RV Generation/target/
 RV Generation/.metadata/
+DRV Generation/.settings/
+DRV Generation/.classpath
+DRV Generation/target/
+DRV Generation/bin/
+.project
+.classpath
