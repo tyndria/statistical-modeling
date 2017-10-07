@@ -1,17 +1,27 @@
 package modeling.geometric;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
+import modeling.Moments;
 import modeling.mcgenerator.MCGenerator;
 
 public class GeometricDRVGenerator implements Constants{
 	private List<Long> generatedSequence;
 	private MCGenerator mcGenerator;
+	private Moments moments = new Moments();
+	private double P = Constants.P;
 	
 	public GeometricDRVGenerator() {	
 		generatedSequence = new ArrayList<Long>();
 		mcGenerator = new MCGenerator(modeling.Constants.A_1, modeling.Constants.C_1);
+	}
+	
+	public void setP(double p) {
+		this.P = p;
 	}
 	
 	public void generate(int n) {
@@ -36,7 +46,8 @@ public class GeometricDRVGenerator implements Constants{
 	}
 	
 	public double getMathExpectation() {
-		return (double)generatedSequence.stream().reduce((long)0, (Long prev, Long curr) -> prev + curr) / generatedSequence.size();
+		List<Double> sequence = generatedSequence.stream().map(Double::valueOf).collect(Collectors.toList());
+		return moments.getMathExpectation(sequence);
 	}
 	
 	public double getRealDispersion() {
@@ -44,15 +55,11 @@ public class GeometricDRVGenerator implements Constants{
 	}
 	
 	public double getDispersion() {
-		long sqrtSum = generatedSequence.stream()
-		         .mapToLong(v -> (long) Math.pow(v, 2))
-		         .sum();
-		double sqrtMathExpectation = (double)sqrtSum / generatedSequence.size();
-		return (double)sqrtMathExpectation - Math.pow(getMathExpectation(), 2);
+		List<Double> sequence = generatedSequence.stream().map(Double::valueOf).collect(Collectors.toList());
+		return moments.getDispersion(sequence, getMathExpectation());
 	}
 	
-	private long getDiscreteRV(double rv) {
+	public long getDiscreteRV(double rv) {
 		return Math.round(Math.log10(rv) / Math.log10(Q));
 	}
-	
 }
