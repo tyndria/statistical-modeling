@@ -60,6 +60,6 @@ public class GeometricDRVGenerator implements Constants{
 	}
 	
 	public long getDiscreteRV(double rv) {
-		return Math.round(Math.log10(rv) / Math.log10(Q));
+		return Math.round(Math.log(rv) / Math.log(Q));
 	}
 }
