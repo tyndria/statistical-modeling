@@ -48,6 +48,24 @@ public class BinomialDRVGenerator implements Constants{
 		return M * P * (1 - P);
 	}
 	
+	public double getSkewness() {
+		List<Double> sequence = generatedSequence.stream().map(Double::valueOf).collect(Collectors.toList());
+		return moments.getSkewness(sequence);
+	}
+	
+	public double getRealSkewness() {
+		return (1 - 2 * P) / Math.sqrt(M * P * (1 - P));
+	}
+	
+	public double getKurtosis() {
+		List<Double> sequence = generatedSequence.stream().map(Double::valueOf).collect(Collectors.toList());
+		return moments.getKurtosis(sequence);
+	}
+	
+	public double getRealKurtosis() {
+		return (1 - 6 * P * (1 - P)) / (M * P * (1 - P));
+	}
+	
 	public double getDispersion() {
 		List<Double> sequence = generatedSequence.stream().map(Double::valueOf).collect(Collectors.toList());
 		return moments.getDispersion(sequence, getMathExpectation());
@@ -62,7 +80,7 @@ public class BinomialDRVGenerator implements Constants{
 		long v = n;
 		for (int i = 1; i < n + 1; i ++) {
 			bufGeneratedSequence.add(geometricGenerator.get(i));
-			if (bufGeneratedSequence.stream().mapToLong((e) -> e).sum() > M) {
+			if (bufGeneratedSequence.stream().mapToLong((e) -> e).sum() >= M) {
 				v = i;
 				break;
 			}

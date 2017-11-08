@@ -14,6 +14,7 @@ public class GeometricDRVGenerator implements Constants{
 	private MCGenerator mcGenerator;
 	private Moments moments = new Moments();
 	private double P = Constants.P;
+	int n;
 	
 	public GeometricDRVGenerator() {	
 		generatedSequence = new ArrayList<Long>();
@@ -25,6 +26,7 @@ public class GeometricDRVGenerator implements Constants{
 	}
 	
 	public void generate(int n) {
+		this.n = n;
 		generatedSequence.clear();
 		mcGenerator.generate(n);
 
@@ -45,6 +47,24 @@ public class GeometricDRVGenerator implements Constants{
 		return 1d / P;
 	}
 	
+	public double getSkewness() {
+		List<Double> sequence = generatedSequence.stream().map(Double::valueOf).collect(Collectors.toList());
+		return moments.getSkewness(sequence);
+	}
+	
+	public double getRealSkewness() {
+		return (2 - P) / Math.sqrt(1 - P);
+	}
+	
+	public double getKurtosis() {
+		List<Double> sequence = generatedSequence.stream().map(Double::valueOf).collect(Collectors.toList());
+		return moments.getKurtosis(sequence);
+	}
+	
+	public double getRealKurtosis() {
+		return (6 + Math.pow(P, 2) / (1 - P));
+	}
+	
 	public double getMathExpectation() {
 		List<Double> sequence = generatedSequence.stream().map(Double::valueOf).collect(Collectors.toList());
 		return moments.getMathExpectation(sequence);
@@ -60,6 +80,6 @@ public class GeometricDRVGenerator implements Constants{
 	}
 	
 	public long getDiscreteRV(double rv) {
-		return Math.round(Math.log(rv) / Math.log(Q));
+		return (long) Math.ceil(Math.log(rv) / Math.log(Q));
 	}
 }

@@ -22,28 +22,45 @@ public class Main{
 		
 		EmpiricalDistribution empiricalDistribution = new EmpiricalDistribution();
 		
-		GeometricDRVGenerator generator = new GeometricDRVGenerator();
-		//BinomialDRVGenerator generator = new BinomialDRVGenerator();
-		generator.generate(1000);
-		List<Long> generatedSequence = generator.getGeneratedSequence();
-		List<Double> sequence = generatedSequence.stream().map(Double::valueOf).collect(Collectors.toList());
+		GeometricDRVGenerator geomGenerator = new GeometricDRVGenerator();
+		BinomialDRVGenerator binomGenerator = new BinomialDRVGenerator();
+		geomGenerator.generate(10000);
+		List<Long> generatedSequence = geomGenerator.getGeneratedSequence();
+		List<Double> geomSequence = generatedSequence.stream().map(Double::valueOf).collect(Collectors.toList());
 		
-		System.out.println(test.run(sequence, 
-				(double v) -> geometricDistribution.cumulativeProbability((int)v)));
-		System.out.println(test.run(sequence, 
-				(double v) -> binomialDistribution.cumulativeProbability((int)v)));
+		binomGenerator.generate(10000);
+		generatedSequence = binomGenerator.getGeneratedSequence();
+		List<Double> binomSequence = generatedSequence.stream().map(Double::valueOf).collect(Collectors.toList());
 		
-		//System.out.println(geometricGenerator.getGeneratedSequence());
-		//System.out.println(binomialGenerator.getRealDispersion());
-		//System.out.println(binomialGenerator.getDispersion());
+		System.out.println("geometric: ");
+		System.out.println(geomGenerator.getGeneratedSequence());
+		System.out.println(geomGenerator.getRealDispersion() + " (real dispersion) : " + geomGenerator.getDispersion());
+		System.out.println(geomGenerator.getRealMathExpectation() + " (real expectation) : " + geomGenerator.getMathExpectation());
+		System.out.println(geomGenerator.getRealSkewness() + " (real skewness) : " + geomGenerator.getSkewness());
+		System.out.println(geomGenerator.getRealKurtosis() + " (real kurtosis) : " + geomGenerator.getKurtosis());
+		
+		
+		System.out.println("\n binomial: ");
+		System.out.println(binomGenerator.getGeneratedSequence());
+		System.out.println(binomGenerator.getRealDispersion() + " (real dispersion) : " + binomGenerator.getDispersion());
+		System.out.println(binomGenerator.getRealMathExpectation() + " (real expectation) : " +  binomGenerator.getMathExpectation());
+		System.out.println(binomGenerator.getRealSkewness() + " (real skewness) : " + binomGenerator.getSkewness());
+		System.out.println(binomGenerator.getRealKurtosis() + " (real kurtosis) : " + binomGenerator.getKurtosis());
+		
+		System.out.println("\n Pearson tests:");
+		System.out.println("Geometric: " + test.run(geomSequence, 
+				(double v) -> geometricDistribution.probability((int)v)));
+		System.out.println("Binomial: " + test.run(binomSequence, 
+				(double v) -> binomialDistribution.probability((int)v)));
+
 		
 		int[] sample = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 		Map<Integer, Double> probabilities = new TreeMap();
 		for(int i = 0; i < sample.length; i ++) {
-			//probabilities.put(sample[i], geometricDistribution.cumulativeProbability(sample[i]));
-			//probabilities.put(sample[i], empiricalDistribution.count((double)sample[i], sequence));
+			//probabilities.put(sample[i], binomialDistribution.cumulativeProbability(sample[i]));
+			probabilities.put(sample[i], empiricalDistribution.count((double)sample[i], binomSequence));
 		}
-		//System.out.println(probabilities);
+		System.out.println(probabilities);
 	}
 
 }
