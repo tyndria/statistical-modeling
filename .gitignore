@@ -10,3 +10,5 @@ DRV Generation/target/
 DRV Generation/bin/
 .project
 .classpath
+CRV Generation/.settings/org.eclipse.m2e.core.prefs
+CRV Generation/.settings/org.eclipse.jdt.core.prefs
