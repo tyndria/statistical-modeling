@@ -1,5 +1,8 @@
 package montecarlo;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.math3.distribution.CauchyDistribution;
@@ -36,6 +39,11 @@ public class Main {
 						xValues, yValues, N);
 		System.out.println(calculatedThirdIntegral);
 		
+		// Linear system
+		double[][] a = {{6.75, 0, 2.25}, {2.7, 4.5, 1.8}, {1.8, 1.8, 5.4}};
+		double[] f = {0.33333, 0.33333, 0.33334};	
+		
+		List<Double> linearSystemSolution = mc.calcLinearSystemSolution(a, f, 3);
 	}
 	
 	public static double firstIntegral(double[] x) {
