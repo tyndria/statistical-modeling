@@ -17,15 +17,15 @@ public class MonteCarloMethod {
 		return sum / N;
 	}
 	
-	public double calcDoubleRegionIntegral(UnderIntegralFunction integralF, IntegralRegionFunction regionF, List<Double> xValues, List<Double> yValues, int N) {
+	public double calcDoubleRegionIntegral(UnderIntegralFunction integralFunction, IntegralRegionFunction isInsideRegion, List<Double> xValues, List<Double> yValues, int N) {
 		int regionPointsCount = 0;
 		double sum = 0;
 		
 		for (int i = 0; i < N; i ++) {
-			if (regionF.call(xValues.get(i), yValues.get(i))) {
+			if (isInsideRegion.call(xValues.get(i), yValues.get(i))) {
 				regionPointsCount ++;
 				
-				sum += integralF.call(xValues.get(i), yValues.get(i));
+				sum += integralFunction.call(xValues.get(i), yValues.get(i));
 			}
 		}
 		
@@ -36,14 +36,24 @@ public class MonteCarloMethod {
 	}
 	
 	public List<Double> calcLinearSystemSolution(double[][] a, double[] f, int n) {
-		List<Double> solution = new ArrayList<Double>(n);
+		ArrayList<Double> solution = new ArrayList();
+		double[][] h = {{1d, 0d, 0d}, {0d, 1d, 0d}, {0d, 0d, 1d}};
+		for (int i = 0; i < n; i ++) {
+			double x = calcVectorElement(a, f, n, h[i]);
+			solution.add(x);
+		}
+		
+		return solution;
+	}
+	
+	private double calcVectorElement(double[][] a, double[] f, int n, double[] h) {
+		int m = 1000;
 		double[] initMarkovProb = new double[n];
 		double[][] transitionMatrix = new double[n][];
-		int[] markovChain = new int[100];
-		double[] statesWeight = new double[100];
-		ArrayList<Double> h = new ArrayList<Double>(Arrays.asList(1d, 0d, 0d));
-		double[] ksi = new double[100];
-	
+		int[] markovChain = new int[m];
+		double[] statesWeight = new double[m];
+		double[] ksi = new double[m];
+
 		// initialize markov inital probabilities and transition matrix
 		for (int i = 0; i < n; i ++) {
 			initMarkovProb[i] = 1d / n;
@@ -54,15 +64,15 @@ public class MonteCarloMethod {
 			}
 		}
 		
-		// generate 100 markov chain with length of 100
+		// generate 1000 markov chain with length of 1000
 		Random random = new Random();
-		for (int i = 0; i < 100; i ++) {
+		for (int i = 0; i < m; i ++) {
 
-			for (int j = 0; j < 100; j ++) {
+			for (int j = 0; j < m; j ++) {
 				double randomValue = random.nextDouble();
 				if (randomValue < initMarkovProb[0]) {
 					markovChain[j] = 0;
-				} else if (randomValue < 2 * initMarkovProb[0]) {
+				} else if (randomValue < (2 * initMarkovProb[0])) {
 					markovChain[j] = 1;
 				} else {
 					markovChain[j] = 2;
@@ -71,12 +81,12 @@ public class MonteCarloMethod {
 			
 			
 			if (initMarkovProb[markovChain[0]] > 0) {
-				statesWeight[0] =  h.get(markovChain[0]) / initMarkovProb[markovChain[0]];
+				statesWeight[0] = h[markovChain[0]] / initMarkovProb[markovChain[0]];
 			} else {
 				statesWeight[0] = 0d;
 			}
 			
-			for (int j = 1; j < 100; j ++) {
+			for (int j = 1; j < m; j ++) {
 				if (transitionMatrix[markovChain[j - 1]][markovChain[j]] > 0) {
 					double v1 = statesWeight[j - 1] * a[markovChain[j - 1]][markovChain[j]];
 					double v2 = transitionMatrix[markovChain[j - 1]][markovChain[j]];
@@ -87,7 +97,7 @@ public class MonteCarloMethod {
 				}
 			}
 			
-			for (int j = 1; j < 100; j ++) {
+			for (int j = 0; j < m; j ++) {
 				double randomV = ksi[i] + statesWeight[j] * f[markovChain[j]];
 				ksi[i] = randomV;
 			}
@@ -95,16 +105,16 @@ public class MonteCarloMethod {
 		
 		double x = 0;
 		
-		for(int j = 0; j  < 100; j ++) {
+		for(int j = 0; j  < m; j ++) {
 			x = x + ksi[j];
 		}
 		
-		x = x / 100;
-		System.out.println(x);
+		x = x / m;
 		
-		return solution;
+		return x;
 	}
 }
+
 
 interface UnderIntegralFunction {
 	double call(double ...x);

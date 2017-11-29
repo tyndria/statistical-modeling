@@ -20,7 +20,7 @@ public class Main {
 		List<Double> values = utils.generateUniformRV(0, Math.PI, N);
 		double calculatedIntegral = 
 				mc.calcIntegral((x) -> firstIntegral(x), values, 0, Math.PI, N);
-		System.out.println(calculatedIntegral);
+		System.out.println("First integral: " + calculatedIntegral + "\n");
 		
 		// For the second integral
 		CauchyGenerator generator = new CauchyGenerator();
@@ -29,7 +29,7 @@ public class Main {
 		List<Double> rValues = generator.getGeneratedSequence();
 		double calculatedSecondIntegral = 
 				mc.calcImproperIntegral((x) -> secondIntegral(x), rValues, (x) -> cauchyD.density(x), N); 
-		System.out.println(calculatedSecondIntegral);
+		System.out.println("Second integral: " + calculatedSecondIntegral + "\n");
 		
 		// For the third integral
 		List<Double> xValues = utils.generateUniformRV(-1, 1, N);
@@ -37,13 +37,18 @@ public class Main {
 		double calculatedThirdIntegral = 
 				mc.calcDoubleRegionIntegral((x) -> thirdIntegral(x), (x) -> integralRegion(x),
 						xValues, yValues, N);
-		System.out.println(calculatedThirdIntegral);
+		System.out.println("Third integral: " + calculatedThirdIntegral + "\n");
 		
 		// Linear system
-		double[][] a = {{6.75, 0, 2.25}, {2.7, 4.5, 1.8}, {1.8, 1.8, 5.4}};
-		double[] f = {0.33333, 0.33333, 0.33334};	
+		/* Real solution: { x = 0.03644144144144146, y = 0.03653153153153154, z = 0.03734234234234233 }.*/
 		
-		List<Double> linearSystemSolution = mc.calcLinearSystemSolution(a, f, 3);
+		double[][] a = {{-0.35, 0, -0.45}, {-0.6, 0, -0.4}, {-0.333, -0.333, 0}};
+		double[] f = {0.066666, 0.07407, 0.061727};	
+		
+		Double[] linearSystemSolution = mc.calcLinearSystemSolution(a, f, 3).toArray(new Double[3]);
+		System.out.println("Linear system solution: " + Arrays.toString(linearSystemSolution));
+		double discrepancy = utils.countDiscrepancy(a, f, 3, linearSystemSolution);
+		System.out.println("Discrepancy :( " + discrepancy);
 	}
 	
 	public static double firstIntegral(double[] x) {
@@ -59,6 +64,6 @@ public class Main {
 	}
 	
 	public static boolean integralRegion(double[] x) {
-		return Math.pow(x[0], 2) + Math.pow(x[1], 2) < 1;
+		return (Math.pow(x[0], 2) + Math.pow(x[1], 2)) < 1;
 	}
 }
