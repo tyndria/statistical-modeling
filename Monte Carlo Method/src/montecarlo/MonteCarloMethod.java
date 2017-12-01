@@ -1,7 +1,6 @@
 package montecarlo;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -30,7 +29,7 @@ public class MonteCarloMethod {
 		}
 		
 		double coeff = (double)regionPointsCount / N;
-		double square = 1d * coeff;
+		double square = 4d * coeff;
 		double mean = sum / regionPointsCount;
 		return mean * square;
 	}

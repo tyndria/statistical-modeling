@@ -1,8 +1,6 @@
 package montecarlo;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.math3.distribution.CauchyDistribution;
@@ -33,6 +31,12 @@ public class Main {
 		
 		// For the third integral
 		List<Double> xValues = utils.generateUniformRV(-1, 1, N);
+		// To generate two sets of random values independently
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			System.out.println(e.getMessage());
+		}
 		List<Double> yValues = utils.generateUniformRV(-1, 1, N);
 		double calculatedThirdIntegral = 
 				mc.calcDoubleRegionIntegral((x) -> thirdIntegral(x), (x) -> integralRegion(x),
